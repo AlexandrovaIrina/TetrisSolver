@@ -15,4 +15,5 @@ public class Field {
         field[x][y].setStatus(status);
     }
 
+
 }

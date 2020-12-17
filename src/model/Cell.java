@@ -10,6 +10,11 @@ public class Cell {
         this.y = y;
         this.status = CellStatus.EMPTY;
     }
+    public Cell(int x, int y, CellStatus status) {
+        this.x = x;
+        this.y = y;
+        this.status = status;
+    }
 
     public int getX() {
         return x;

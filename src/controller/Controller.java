@@ -2,9 +2,7 @@ package controller;
 
 import view.*;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 
 
 public class Controller {
@@ -39,15 +37,6 @@ public class Controller {
 
         @Override
         public void mousePressed(MouseEvent mouseEvent) {
-            int x = mouseEvent.getX();
-            int y = mouseEvent.getY();
-            if (x >= buttonX && x <= buttonX + 300) {
-                if (y >= buttonY && y <= buttonY + 60 ||
-                        y >= buttonY + 90 && y <= buttonY + 150) {
-                    super.mouseDragged(mouseEvent);
-                    System.out.println("mouse pressed");
-                }
-            }
         }
 
         @Override
@@ -57,12 +46,19 @@ public class Controller {
 
         @Override
         public void mouseEntered(MouseEvent mouseEvent) {
-
         }
 
         @Override
         public void mouseExited(MouseEvent mouseEvent) {
+        }
+    }
 
+    public class KeyboardListener implements FocusListener {
+
+        public void focusGained(FocusEvent e) {
+        }
+
+        public void focusLost(FocusEvent e) {
         }
     }
 }
