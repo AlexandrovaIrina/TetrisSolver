@@ -1,16 +1,20 @@
 package view;
 
 import controller.Controller;
+import model.Cell;
+import model.Figure;
+import model.FigurePosition;
 
 import javax.swing.*;
 import java.awt.*;
 
 
 public class MainFrame extends JFrame {
-    final int buttonX = 140;  // скорректировать расположение кнопок
+    final int buttonX = 140;
     final int buttonY = 250;
-    private JPanel panel;
+    private static JPanel panel;
     private final Controller controller = new Controller(this);
+
     MainFrame (String s) {
         super (s);
         panel = new JPanel() {
@@ -31,20 +35,89 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible (true);
     }
+
+    private static final int x = 54;
+    private static final int y = 112;
+    private static final int cellWidth = 38;
+
     public void drawGameField() {
         Graphics g = panel.getGraphics();
         g.drawImage((new ImageIcon("resources/GameField.png").getImage()), 0, 0, panel);
-        final int x = 54;
-        final int y = 112;
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 16; j++) {
                 g.drawImage((new ImageIcon("resources/EmptyCell.png").getImage()),
-                        x + i*38, y + j*38, panel);
+                        x + i * cellWidth, y + j * cellWidth, panel);
             }
         }
+        g.drawImage((new ImageIcon("resources/RotationButton.png").getImage()), 488, 641, panel);
+        g.drawImage((new ImageIcon("resources/LeftMovingButton.png").getImage()), 450, 679, panel);
+        g.drawImage((new ImageIcon("resources/RightMoveButton.png").getImage()), 526, 679, panel);
+
         add(panel);
         setSize (600, 800);
     }
+
+    public static void redrawFigure(Figure figure, FigurePosition lastPosition, FigurePosition newPosition) {
+        Graphics g = panel.getGraphics();
+        ImageIcon cellIcon;
+        switch (figure.getType()) {
+            case J:{
+                cellIcon = new ImageIcon("resources/YellowCell.png");
+                break;
+            }
+            case L:{
+                cellIcon = new ImageIcon("resources/GreenCell.png");
+                break;
+            }
+            case S:{
+                cellIcon = new ImageIcon("resources/BlueCell.png");
+                break;
+            }
+            case T:{
+                cellIcon = new ImageIcon("resources/OrangeCell.png");
+                break;
+            }
+            case Z:{
+                cellIcon = new ImageIcon("resources/RedCell.png");
+                break;
+            }
+            case LINE:{
+                cellIcon = new ImageIcon("resources/CyanCell.png");
+                break;
+            }
+            default:
+                cellIcon = new ImageIcon("resources/PurpleCell.png");
+        }
+
+        final Cell firstCell = lastPosition.getFirstCell();
+        final Cell secondCell = lastPosition.getSecondCell();
+        final Cell thirdCell = lastPosition.getThirdCell();
+        final Cell forthCell = lastPosition.getForthCell();
+
+        final Cell newFirstCell = newPosition.getFirstCell();
+        final Cell newSecondCell = newPosition.getSecondCell();
+        final Cell newThirdCell = newPosition.getThirdCell();
+        final Cell newForthCell = newPosition.getForthCell();
+
+        g.drawImage((new ImageIcon("resources/EmptyCell.png").getImage()),
+                x + firstCell.getX() * cellWidth, y + firstCell.getY() * cellWidth, panel);
+        g.drawImage((new ImageIcon("resources/EmptyCell.png").getImage()),
+                x + secondCell.getX() * cellWidth, y + secondCell.getY() * cellWidth, panel);
+        g.drawImage((new ImageIcon("resources/EmptyCell.png").getImage()),
+                x + thirdCell.getX() * cellWidth, y + thirdCell.getY() * cellWidth, panel);
+        g.drawImage((new ImageIcon("resources/EmptyCell.png").getImage()),
+                x + forthCell.getX() * cellWidth, y + forthCell.getY() * cellWidth, panel);
+
+        g.drawImage(cellIcon.getImage(),x + newFirstCell.getX() * cellWidth,
+                y + newFirstCell.getY() * cellWidth, panel);
+        g.drawImage(cellIcon.getImage(),x + newSecondCell.getX() * cellWidth,
+                y + newSecondCell.getY() * cellWidth, panel);
+        g.drawImage(cellIcon.getImage(),x + newThirdCell.getX() * cellWidth,
+                y + newThirdCell.getY() * cellWidth, panel);
+        g.drawImage(cellIcon.getImage(),x + newForthCell.getX() * cellWidth,
+                y + newForthCell.getY() * cellWidth, panel);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(
                 () -> new MainFrame("Тетрис")

@@ -1,5 +1,11 @@
 package controller;
 
+import model.Figure;
+import static model.FigureType.*;
+import static model.Move.*;
+import static view.MainFrame.redrawFigure;
+
+import model.FigurePosition;
 import view.*;
 
 import java.awt.event.*;
@@ -14,9 +20,11 @@ public class Controller {
         this.mainFrame = mainFrame;
     }
 
+    private boolean fieldOpened = false;
     final int buttonX = 140;
     final int buttonY = 250;
-
+    final int cellWidth = 38;
+    Figure currentFigure = new Figure(LINE);
     public ButtonMouseMotionEvent getMouseEvent() {
         return mouseEvent;
     }
@@ -26,11 +34,29 @@ public class Controller {
         public void mouseClicked(MouseEvent e) {
             int x = e.getX();
             int y = e.getY();
-            if (x >= buttonX && x <= buttonX + 300) {
+            if (! fieldOpened && x >= buttonX && x <= buttonX + 300) {
                 if (y >= buttonY && y <= buttonY + 60 ||
                 y >= buttonY + 90 && y <= buttonY + 150) {
+                    fieldOpened = true;
                     super.mouseDragged(e);
                     mainFrame.drawGameField();
+                }
+            }
+            if (fieldOpened) {
+                if (x >= 488 && x <= 488 + cellWidth &&
+                        y >= 641 && y <= 641 + cellWidth) {
+                    System.out.println("rotation");
+                }
+                if (y >= 679 && y <= 679 + cellWidth) {
+                    FigurePosition lastPosition = currentFigure.getPosition();
+                    if (x >= 450 && x <= 450 + cellWidth) {
+                        System.out.println("move to the left");
+                        redrawFigure(currentFigure, lastPosition, currentFigure.getPosition().movePosition(LEFT));
+                    }
+                    if (x >= 526 && x <= 526 + cellWidth) {
+                        System.out.println("move to the right");
+                        redrawFigure(currentFigure, lastPosition, currentFigure.getPosition().movePosition(RIGHT));
+                    }
                 }
             }
         }
@@ -53,12 +79,4 @@ public class Controller {
         }
     }
 
-    public class KeyboardListener implements FocusListener {
-
-        public void focusGained(FocusEvent e) {
-        }
-
-        public void focusLost(FocusEvent e) {
-        }
-    }
 }

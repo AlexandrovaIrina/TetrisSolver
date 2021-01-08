@@ -47,4 +47,5 @@ public class Figure {
         return color;
     }
 
+    public FigurePosition getPosition() {return position; }
 }
