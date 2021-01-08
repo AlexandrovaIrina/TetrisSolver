@@ -1,8 +1,7 @@
 package controller;
 
-import model.Figure;
-import static model.FigureType.*;
 import static model.Move.*;
+import static view.MainFrame.currentFigure;
 import static view.MainFrame.redrawFigure;
 
 import model.FigurePosition;
@@ -24,7 +23,7 @@ public class Controller {
     final int buttonX = 140;
     final int buttonY = 250;
     final int cellWidth = 38;
-    Figure currentFigure = new Figure(LINE);
+    public boolean ableToMake = true;
     public ButtonMouseMotionEvent getMouseEvent() {
         return mouseEvent;
     }
@@ -32,13 +31,17 @@ public class Controller {
     public class ButtonMouseMotionEvent extends MouseMotionAdapter implements MouseListener {
         @Override
         public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
             int x = e.getX();
             int y = e.getY();
             if (! fieldOpened && x >= buttonX && x <= buttonX + 300) {
                 if (y >= buttonY && y <= buttonY + 60 ||
-                y >= buttonY + 90 && y <= buttonY + 150) {
+                        y >= buttonY + 90 && y <= buttonY + 150) {
                     fieldOpened = true;
-                    super.mouseDragged(e);
                     mainFrame.drawGameField();
                 }
             }
@@ -46,23 +49,30 @@ public class Controller {
                 if (x >= 488 && x <= 488 + cellWidth &&
                         y >= 641 && y <= 641 + cellWidth) {
                     System.out.println("rotation");
+
                 }
                 if (y >= 679 && y <= 679 + cellWidth) {
-                    FigurePosition lastPosition = currentFigure.getPosition();
+                    FigurePosition lastPosition = new FigurePosition(currentFigure.getPosition());
                     if (x >= 450 && x <= 450 + cellWidth) {
-                        System.out.println("move to the left");
-                        redrawFigure(currentFigure, lastPosition, currentFigure.getPosition().movePosition(LEFT));
+                        if (ableToMake) {
+                            currentFigure.movePosition(LEFT);
+                            FigurePosition newPosition = currentFigure.getPosition();
+                            redrawFigure(currentFigure, lastPosition, newPosition);
+                            ableToMake = false;
+                        }
+                        else ableToMake = true;
                     }
                     if (x >= 526 && x <= 526 + cellWidth) {
-                        System.out.println("move to the right");
-                        redrawFigure(currentFigure, lastPosition, currentFigure.getPosition().movePosition(RIGHT));
+                        if (ableToMake) {
+                            currentFigure.movePosition(RIGHT);
+                            FigurePosition newPosition = currentFigure.getPosition();
+                            redrawFigure(currentFigure, lastPosition, newPosition);
+                            ableToMake = false;
+                        }
+                        else ableToMake = true;
                     }
                 }
             }
-        }
-
-        @Override
-        public void mousePressed(MouseEvent mouseEvent) {
         }
 
         @Override
