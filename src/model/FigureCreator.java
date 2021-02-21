@@ -1,10 +1,15 @@
 package model;
 
+import java.util.Random;
+
+import static model.CellStatus.EMPTY;
+
 import static model.FigureType.*;
+import static view.MainFrame.field;
 
 public class FigureCreator {
-    public Figure currentFigure;
-    public Figure nextFigure;
+    public static Figure currentFigure;
+    public static Figure nextFigure;
 
     public FigureCreator() {
         currentFigure = new Figure(LINE);
@@ -19,37 +24,70 @@ public class FigureCreator {
         this.nextFigure = nextFigure;
     }
 
-    public void recreateFigure() {
-        currentFigure = nextFigure;
-        switch (nextFigure.getType()) {
-            case L: {
-                nextFigure = new Figure(J);
+    public static void recreateFigure() {
+        currentFigure.assign(nextFigure);
+        final Random random = new Random();
+        
+        switch (random.nextInt(7)) {
+            case 0: {
+                nextFigure.assign(new Figure(J));
                 break;
             }
-            case J: {
-                nextFigure = new Figure(T);
+            case 1: {
+                nextFigure.assign(new Figure(T));
                 break;
             }
-            case T: {
-                nextFigure = new Figure(S);
+            case 2: {
+                nextFigure.assign(new Figure(S));
                 break;
             }
-            case S: {
-                nextFigure = new Figure(Z);
+            case 3: {
+                nextFigure.assign(new Figure(Z));
                 break;
             }
-            case Z: {
-                nextFigure = new Figure(LINE);
+            case 4: {
+                nextFigure.assign(new Figure(LINE));
                 break;
             }
-            case LINE: {
-                nextFigure = new Figure(SQUARE);
+            case 5: {
+                nextFigure.assign(new Figure(SQUARE));
                 break;
             }
-            case SQUARE: {
-                nextFigure = new Figure(L);
+            case 6: {
+                nextFigure.assign(new Figure(L));
                 break;
             }
         }
+    }
+    public static void swapFigures(Figure currentFigure, Figure nextFigure) {
+
+        field[currentFigure.getPosition().getFirstCell().getX()]
+                [currentFigure.getPosition().getFirstCell().getY()].setStatus(EMPTY);
+
+        field[currentFigure.getPosition().getSecondCell().getX()]
+                [currentFigure.getPosition().getSecondCell().getY()].setStatus(EMPTY);
+
+        field[currentFigure.getPosition().getThirdCell().getX()]
+                [currentFigure.getPosition().getThirdCell().getY()].setStatus(EMPTY);
+
+        field[currentFigure.getPosition().getForthCell().getX()]
+                [currentFigure.getPosition().getForthCell().getY()].setStatus(EMPTY);
+
+        if (currentFigure.getPosition().ableToFall() && currentFigure.getPosition().getFirstCell().getY() > 0) {
+            final Figure next = new Figure(nextFigure.getType(), currentFigure.getPosition());
+            nextFigure.assign(new Figure(currentFigure.getType()));
+            currentFigure.assign(next);
+        }
+        field[currentFigure.getPosition().getFirstCell().getX()]
+                [currentFigure.getPosition().getFirstCell().getY()].setStatus(currentFigure.getColor());
+
+        field[currentFigure.getPosition().getSecondCell().getX()]
+                [currentFigure.getPosition().getSecondCell().getY()].setStatus(currentFigure.getColor());
+
+        field[currentFigure.getPosition().getThirdCell().getX()]
+                [currentFigure.getPosition().getThirdCell().getY()].setStatus(currentFigure.getColor());
+
+        field[currentFigure.getPosition().getForthCell().getX()]
+                [currentFigure.getPosition().getForthCell().getY()].setStatus(currentFigure.getColor());
     }
 }

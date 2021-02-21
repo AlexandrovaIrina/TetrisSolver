@@ -1,13 +1,12 @@
 package view;
 
 import controller.Controller;
-import model.Cell;
-import model.Figure;
-import model.FigureCreator;
-import model.FigurePosition;
+import model.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
+import java.util.Timer;
 
 
 public class MainFrame extends JFrame {
@@ -15,9 +14,16 @@ public class MainFrame extends JFrame {
     final int buttonY = 250;
     private static JPanel panel;
     private final Controller controller = new Controller(this);
+    public static Cell[][] field = new Cell[10][16];
 
     MainFrame (String s) {
         super (s);
+        field = new Cell[10][16];
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 16; j++){
+                field [i][j] = new Cell(i, j);
+            }
+        }
         panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -53,6 +59,7 @@ public class MainFrame extends JFrame {
         g.drawImage((new ImageIcon("resources/RotationButton.png").getImage()), 488, 641, panel);
         g.drawImage((new ImageIcon("resources/LeftMovingButton.png").getImage()), 450, 679, panel);
         g.drawImage((new ImageIcon("resources/RightMoveButton.png").getImage()), 526, 679, panel);
+        g.drawImage((new ImageIcon("resources/ChangeButton.png").getImage()), 488, 679, panel);
 
         add(panel);
         setSize (600, 800);
@@ -60,65 +67,91 @@ public class MainFrame extends JFrame {
     public static FigureCreator creator = new FigureCreator();
     public static Figure currentFigure = creator.currentFigure;
     public static Figure nextFigure = creator.nextFigure;
-    public static void redrawFigure(Figure figure, FigurePosition lastPosition, FigurePosition newPosition) {
-        Graphics g = panel.getGraphics();
+
+    private static ImageIcon chooseCellIcon(CellStatus status) {
         ImageIcon cellIcon;
-        switch (figure.getType()) {
-            case J:{
+        switch (status) {
+            case YELLOW:{
                 cellIcon = new ImageIcon("resources/YellowCell.png");
                 break;
             }
-            case L:{
+            case GREEN:{
                 cellIcon = new ImageIcon("resources/GreenCell.png");
                 break;
             }
-            case S:{
+            case BLUE:{
                 cellIcon = new ImageIcon("resources/BlueCell.png");
                 break;
             }
-            case T:{
+            case ORANGE:{
                 cellIcon = new ImageIcon("resources/OrangeCell.png");
                 break;
             }
-            case Z:{
+            case RED:{
                 cellIcon = new ImageIcon("resources/RedCell.png");
                 break;
             }
-            case LINE:{
+            case CYAN:{
                 cellIcon = new ImageIcon("resources/CyanCell.png");
                 break;
             }
-            default:
+            case PURPLE: {
                 cellIcon = new ImageIcon("resources/PurpleCell.png");
+                break;
+            }
+            default: {
+                cellIcon = new ImageIcon("resources/EmptyCell.png");
+                break;
+            }
         }
+        return cellIcon;
+    }
 
-        final Cell firstCell = lastPosition.getFirstCell();
-        final Cell secondCell = lastPosition.getSecondCell();
-        final Cell thirdCell = lastPosition.getThirdCell();
-        final Cell forthCell = lastPosition.getForthCell();
-
-        final Cell newFirstCell = newPosition.getFirstCell();
-        final Cell newSecondCell = newPosition.getSecondCell();
-        final Cell newThirdCell = newPosition.getThirdCell();
-        final Cell newForthCell = newPosition.getForthCell();
-
-        g.drawImage((new ImageIcon("resources/EmptyCell.png").getImage()),
-                x + (firstCell.getX() - 1) * cellWidth, y + (firstCell.getY() - 1) * cellWidth, panel);
-        g.drawImage((new ImageIcon("resources/EmptyCell.png").getImage()),
-                x + (secondCell.getX() - 1) * cellWidth, y + (secondCell.getY() - 1) * cellWidth, panel);
-        g.drawImage((new ImageIcon("resources/EmptyCell.png").getImage()),
-                x + (thirdCell.getX() - 1) * cellWidth, y + (thirdCell.getY() - 1) * cellWidth, panel);
-        g.drawImage((new ImageIcon("resources/EmptyCell.png").getImage()),
-                x + (forthCell.getX() - 1) * cellWidth, y + (forthCell.getY() - 1) * cellWidth, panel);
-
-        g.drawImage(cellIcon.getImage(),x + (newFirstCell.getX() - 1) * cellWidth,
-                y + (newFirstCell.getY() - 1) * cellWidth, panel);
-        g.drawImage(cellIcon.getImage(),x + (newSecondCell.getX() - 1) * cellWidth,
-                y + (newSecondCell.getY() - 1) * cellWidth, panel);
-        g.drawImage(cellIcon.getImage(),x + (newThirdCell.getX() - 1) * cellWidth,
-                y + (newThirdCell.getY() - 1) * cellWidth, panel);
-        g.drawImage(cellIcon.getImage(),x + (newForthCell.getX() - 1) * cellWidth,
-                y + (newForthCell.getY() - 1) * cellWidth, panel);
+    private static ImageIcon chooseFigureIcon(Figure figure) {
+        ImageIcon figureIcon;
+        switch (figure.getColor()) {
+            case YELLOW:{
+                figureIcon = new ImageIcon("resources/Jfigure.png");
+                break;
+            }
+            case GREEN:{
+                figureIcon = new ImageIcon("resources/Lfigure.png");
+                break;
+            }
+            case BLUE:{
+                figureIcon = new ImageIcon("resources/Sfigure.png");
+                break;
+            }
+            case ORANGE:{
+                figureIcon = new ImageIcon("resources/Tfigure.png");
+                break;
+            }
+            case RED:{
+                figureIcon = new ImageIcon("resources/Zfigure.png");
+                break;
+            }
+            case CYAN:{
+                figureIcon = new ImageIcon("resources/LINEfigure.png");
+                break;
+            }
+            default: {
+                figureIcon = new ImageIcon("resources/SQUAREfigure.png");
+                break;
+            }
+        }
+        return figureIcon;
+    }
+    
+    public static void redrawField() {
+        Graphics g = panel.getGraphics();
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 16; j++) {
+                g.drawImage(chooseCellIcon(field[i][j].getStatus()).getImage(),
+                        x + i * cellWidth, y + j * cellWidth, panel);
+            }
+        }
+        g.drawImage(new ImageIcon("resources/rectangle.png").getImage(), 472, 54, panel);
+        g.drawImage(chooseFigureIcon(nextFigure).getImage(),500, 65, panel);
     }
 
     public static void main(String[] args) {
@@ -126,5 +159,8 @@ public class MainFrame extends JFrame {
                 () -> new MainFrame("Тетрис")
         );
 
+        TimerTask timerTask = new TimerOfMove();
+        Timer timer = new Timer(true);
+        timer.scheduleAtFixedRate(timerTask, 0, 200);
     }
 }

@@ -1,8 +1,7 @@
 package controller;
 
 import static model.Move.*;
-import static view.MainFrame.currentFigure;
-import static view.MainFrame.redrawFigure;
+import static view.MainFrame.*;
 
 import model.FigurePosition;
 import view.*;
@@ -19,7 +18,7 @@ public class Controller {
         this.mainFrame = mainFrame;
     }
 
-    private boolean fieldOpened = false;
+    public static boolean fieldOpened = false;
     final int buttonX = 140;
     final int buttonY = 250;
     final int cellWidth = 38;
@@ -48,36 +47,39 @@ public class Controller {
             if (fieldOpened) {
                 if (x >= 488 && x <= 488 + cellWidth &&
                         y >= 641 && y <= 641 + cellWidth) {
-                    System.out.println("rotation");
-
+                    if (ableToMake) {
+                        System.out.println("rotation");
+                    }
                 }
                 if (y >= 679 && y <= 679 + cellWidth) {
                     FigurePosition lastPosition = new FigurePosition(currentFigure.getPosition());
+
+                    if (x >= 488 && x <= 488 + cellWidth)
+                        if (ableToMake) {
+                            model.FigureCreator.swapFigures(currentFigure, nextFigure);
+                        }
+
                     if (x >= 450 && x <= 450 + cellWidth) {
                         if (ableToMake) {
                             currentFigure.movePosition(LEFT);
                             FigurePosition newPosition = currentFigure.getPosition();
-                            redrawFigure(currentFigure, lastPosition, newPosition);
-                            ableToMake = false;
                         }
-                        else ableToMake = true;
                     }
                     if (x >= 526 && x <= 526 + cellWidth) {
                         if (ableToMake) {
                             currentFigure.movePosition(RIGHT);
                             FigurePosition newPosition = currentFigure.getPosition();
-                            redrawFigure(currentFigure, lastPosition, newPosition);
-                            ableToMake = false;
                         }
-                        else ableToMake = true;
                     }
                 }
             }
+            redrawField();
+            ableToMake = false;
         }
 
         @Override
         public void mouseReleased(MouseEvent mouseEvent) {
-
+            ableToMake = true;
         }
 
         @Override
