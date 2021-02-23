@@ -120,19 +120,25 @@ public class FigurePosition {
         this.forthCell = position.getForthCell();
     }
     public boolean ableToMove(Move move) {
-        if (move == LEFT && secondCell.getX() > 0 && thirdCell.getX() > 0 &&
-                firstCell.getX() > 0 && forthCell.getX() > 0 && 
-                thisField.field[firstCell.getX() - 1][firstCell.getY()].getStatus() == EMPTY &&
-                thisField.field[secondCell.getX() - 1][secondCell.getY()].getStatus() == EMPTY &&
-                thisField.field[thirdCell.getX() - 1][thirdCell.getY()].getStatus() == EMPTY &&
-                thisField.field[forthCell.getX() - 1][forthCell.getY()].getStatus() == EMPTY) return true;
-
-        return move == RIGHT && firstCell.getX() < 9 && secondCell.getX() < 9 &&
-                thirdCell.getX() < 9 && forthCell.getX() < 9 &&
-                thisField.field[firstCell.getX() + 1][firstCell.getY()].getStatus() == EMPTY &&
-                thisField.field[secondCell.getX() + 1][secondCell.getY()].getStatus() == EMPTY &&
-                thisField.field[thirdCell.getX() + 1][thirdCell.getY()].getStatus() == EMPTY &&
-                thisField.field[forthCell.getX() + 1][forthCell.getY()].getStatus() == EMPTY;
+        if (move == LEFT) {
+            if (secondCell.getX() > 0 && thirdCell.getX() > 0 &&
+                    firstCell.getX() > 0 && forthCell.getX() > 0) {
+                if (thisField.field[firstCell.getX() - 1][firstCell.getY()].getStatus() == EMPTY &&
+                        thisField.field[secondCell.getX() - 1][secondCell.getY()].getStatus() == EMPTY &&
+                        thisField.field[thirdCell.getX() - 1][thirdCell.getY()].getStatus() == EMPTY &&
+                        thisField.field[forthCell.getX() - 1][forthCell.getY()].getStatus() == EMPTY) return true;
+            }
+        }
+        if (move == RIGHT) {
+            if (firstCell.getX() < 9 && secondCell.getX() < 9 &&
+                    thirdCell.getX() < 9 && forthCell.getX() < 9) {
+                if (thisField.field[firstCell.getX() + 1][firstCell.getY()].getStatus() == EMPTY &&
+                        thisField.field[secondCell.getX() + 1][secondCell.getY()].getStatus() == EMPTY &&
+                        thisField.field[thirdCell.getX() + 1][thirdCell.getY()].getStatus() == EMPTY &&
+                        thisField.field[forthCell.getX() + 1][forthCell.getY()].getStatus() == EMPTY) return true;
+            }
+        }
+        return false;
     }
 
     public boolean ableToFall() {

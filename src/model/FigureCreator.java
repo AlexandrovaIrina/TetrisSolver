@@ -1,9 +1,9 @@
 package model;
 
 import java.util.Random;
-import static controller.Controller.fieldOpened;
 
-import static model.CellStatus.EMPTY;
+import static controller.Controller.endOfGame;
+import static controller.Controller.fieldOpened;
 
 import static model.FigureType.*;
 import static view.MainFrame.drawEndingScreen;
@@ -23,7 +23,9 @@ public class FigureCreator {
         final Random random = new Random();
         if (!currentFigure.getPosition().ableToFall()) {
             fieldOpened = false;
+            endOfGame = true;
             drawEndingScreen();
+            return;
         }
         switch (random.nextInt(7)) {
             case 0: {
@@ -57,34 +59,14 @@ public class FigureCreator {
         }
     }
     public static void swapFigures(Figure currentFigure, Figure nextFigure) {
-
-        thisField.field[currentFigure.getPosition().getFirstCell().getX()]
-                [currentFigure.getPosition().getFirstCell().getY()].setStatus(EMPTY);
-
-        thisField.field[currentFigure.getPosition().getSecondCell().getX()]
-                [currentFigure.getPosition().getSecondCell().getY()].setStatus(EMPTY);
-
-        thisField.field[currentFigure.getPosition().getThirdCell().getX()]
-                [currentFigure.getPosition().getThirdCell().getY()].setStatus(EMPTY);
-
-        thisField.field[currentFigure.getPosition().getForthCell().getX()]
-                [currentFigure.getPosition().getForthCell().getY()].setStatus(EMPTY);
+        thisField.deleteFigure(currentFigure);
 
         if (currentFigure.getPosition().ableToFall() && currentFigure.getPosition().getFirstCell().getY() > 0) {
             final Figure next = new Figure(nextFigure.getType(), currentFigure.getPosition());
             nextFigure.assign(new Figure(currentFigure.getType()));
             currentFigure.assign(next);
         }
-        thisField.field[currentFigure.getPosition().getFirstCell().getX()]
-                [currentFigure.getPosition().getFirstCell().getY()].setStatus(currentFigure.getColor());
+        thisField.addFigure(currentFigure);
 
-        thisField.field[currentFigure.getPosition().getSecondCell().getX()]
-                [currentFigure.getPosition().getSecondCell().getY()].setStatus(currentFigure.getColor());
-
-        thisField.field[currentFigure.getPosition().getThirdCell().getX()]
-                [currentFigure.getPosition().getThirdCell().getY()].setStatus(currentFigure.getColor());
-
-        thisField.field[currentFigure.getPosition().getForthCell().getX()]
-                [currentFigure.getPosition().getForthCell().getY()].setStatus(currentFigure.getColor());
     }
 }

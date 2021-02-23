@@ -1,28 +1,35 @@
 
 package model;
 
+import controller.Controller;
 import view.MainFrame;
 
 import java.util.TimerTask;
 
+import static controller.Controller.*;
 import static view.MainFrame.currentFigure;
-import static controller.Controller.fieldOpened;
+import static view.MainFrame.redrawField;
 
 public class TimerOfMove extends TimerTask {
+
+    private static int step = 0;
+
     @Override
     public void run() {
-        completeTask();
-    }
-    private void completeTask() {
         if (fieldOpened) {
-            try {
-                Thread.sleep(100);
-                currentFigure.falling();
-                if (fieldOpened) MainFrame.redrawField();
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            completeTask();
         }
     }
+
+    private void completeTask() {
+        if (ableToControl) {
+            currentFigure.falling();
+            if (fieldOpened) MainFrame.redrawField();
+        } else if (!endOfGame) {
+            Controller.solver.solve(step);
+            redrawField();
+            step = (step + 1) % 3;
+        }
+    }
+
 }

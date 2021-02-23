@@ -1,5 +1,6 @@
 package model;
 
+import static controller.Controller.ableToControl;
 import static model.CellStatus.*;
 
 import static model.Field.deleteLines;
@@ -68,22 +69,15 @@ public class Figure {
         final CellStatus color = currentFigure.getColor();
         int i = 1;
         if (move == LEFT) i = -1;
-        thisField.field[position.getFirstCell().getX()][position.getFirstCell().getY()].setStatus(EMPTY);
-        thisField.field[position.getSecondCell().getX()][position.getSecondCell().getY()].setStatus(EMPTY);
-        thisField.field[position.getThirdCell().getX()][position.getThirdCell().getY()].setStatus(EMPTY);
-        thisField.field[position.getForthCell().getX()][position.getForthCell().getY()].setStatus(EMPTY);
-        
+
+        thisField.deleteFigure(this);
         if (position.ableToMove(move)) {
             position.setFirstCell(new Cell(position.getFirstCell().getX() + i, position.getFirstCell().getY(), color));
             position.setSecondCell(new Cell(position.getSecondCell().getX() + i, position.getSecondCell().getY(), color));
             position.setThirdCell(new Cell(position.getThirdCell().getX() + i, position.getThirdCell().getY(), color));
             position.setForthCell(new Cell(position.getForthCell().getX() + i, position.getForthCell().getY(), color));
         }
-
-        thisField.field[position.getFirstCell().getX()][position.getFirstCell().getY()].setStatus(position.getFirstCell().getStatus());
-        thisField.field[position.getSecondCell().getX()][position.getSecondCell().getY()].setStatus(position.getSecondCell().getStatus());
-        thisField.field[position.getThirdCell().getX()][position.getThirdCell().getY()].setStatus(position.getThirdCell().getStatus());
-        thisField.field[position.getForthCell().getX()][position.getForthCell().getY()].setStatus(position.getForthCell().getStatus());
+        thisField.addFigure(this);
 
     }
     public static Cell rotatedCell(Cell baseCell, Cell rotationCell) {
@@ -93,27 +87,19 @@ public class Figure {
     }
 
     public void rotatePosition(){
-        thisField.field[position.getFirstCell().getX()][position.getFirstCell().getY()].setStatus(EMPTY);
-        thisField.field[position.getThirdCell().getX()][position.getThirdCell().getY()].setStatus(EMPTY);
-        thisField.field[position.getForthCell().getX()][position.getForthCell().getY()].setStatus(EMPTY);
+        thisField.deleteFigure(this);
 
         if (position.ableToRotate()) {
             position.setFirstCell(rotatedCell(position.getSecondCell(), position.getFirstCell()));
             position.setThirdCell(rotatedCell(position.getSecondCell(), position.getThirdCell()));
             position.setForthCell(rotatedCell(position.getSecondCell(), position.getForthCell()));
         }
-
-        thisField.field[position.getFirstCell().getX()][position.getFirstCell().getY()].setStatus(position.getFirstCell().getStatus());
-        thisField.field[position.getThirdCell().getX()][position.getThirdCell().getY()].setStatus(position.getThirdCell().getStatus());
-        thisField.field[position.getForthCell().getX()][position.getForthCell().getY()].setStatus(position.getForthCell().getStatus());
+        thisField.addFigure(this);
 
     }
     public void falling() {
         final CellStatus color = currentFigure.getColor();
-        thisField.field[position.getFirstCell().getX()][position.getFirstCell().getY()].setStatus(EMPTY);
-        thisField.field[position.getSecondCell().getX()][position.getSecondCell().getY()].setStatus(EMPTY);
-        thisField.field[position.getThirdCell().getX()][position.getThirdCell().getY()].setStatus(EMPTY);
-        thisField.field[position.getForthCell().getX()][position.getForthCell().getY()].setStatus(EMPTY);
+        thisField.deleteFigure(this);
         final boolean able = position.ableToFall();
 
         if (able) {
@@ -123,38 +109,14 @@ public class Figure {
             position.setForthCell(new Cell(position.getForthCell().getX(), position.getForthCell().getY() + 1, color));
 
         }
-
-        thisField.field[position.getFirstCell().getX()][position.getFirstCell().getY()].setStatus(position.getFirstCell().getStatus());
-        thisField.field[position.getSecondCell().getX()][position.getSecondCell().getY()].setStatus(position.getSecondCell().getStatus());
-        thisField.field[position.getThirdCell().getX()][position.getThirdCell().getY()].setStatus(position.getThirdCell().getStatus());
-        thisField.field[position.getForthCell().getX()][position.getForthCell().getY()].setStatus(position.getForthCell().getStatus());
-
+        thisField.addFigure(this);
 
         if (!able) {
-            int x = deleteLines();
-            switch (x) {
-                case 1: {
-                    thisField.score += 100;
-                    break;
-                }
-                case 2: {
-                    thisField.score += 300;
-                    break;
-                }
-                case 3: {
-                    thisField.score += 700;
-                    break;
-                }
-                case 4: {
-                    thisField.score += 1500;
-                    break;
-                }
-                default: {
-                    break;
-                }
+            thisField.update();
+            if (ableToControl) {
+                redrawField();
+                recreateFigure();
             }
-            redrawField();
-            recreateFigure();
         }
     }
 
