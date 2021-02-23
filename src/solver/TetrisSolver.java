@@ -5,8 +5,10 @@ import model.Figure;
 import model.FigurePosition;
 import view.MainFrame;
 
+import static java.lang.Math.abs;
 import static model.CellStatus.EMPTY;
 import static model.FigureCreator.recreateFigure;
+import static model.FigureCreator.swapFigures;
 import static model.Move.*;
 import static view.MainFrame.*;
 
@@ -18,6 +20,7 @@ public class TetrisSolver {
     private int nearWall;
     private int nearBlock;
     private int nearFloor;
+    private int numberOfBumpiness;
 
     public TetrisSolver() {
         sumOfHeight = 0;
@@ -27,6 +30,7 @@ public class TetrisSolver {
         nearWall = 0;
         nearBlock = 0;
         nearFloor = 0;
+        numberOfBumpiness = 0;
     }
 
     public double calculateTheScore(Figure figure) {
@@ -35,67 +39,75 @@ public class TetrisSolver {
         setCurrentNumberOfHoles();
         setCurrentSumOfHeight();
         setCurrentNumberOfCells(figure.getPosition());
-        return -4.7 * sumOfHeight + 5.0 * numberOfClears - 4.61 * numberOfHoles - 0.0 * numberOfBlockades
-                + 0.0 * nearBlock + 0.0 * nearWall + 0.0 * nearFloor;
+        setNumberOfBumpiness();
+        return -0.510066 * sumOfHeight + 0.760666 * numberOfClears - 0.35663 * numberOfHoles - 0.0 * numberOfBlockades
+                + 0.4 * nearBlock + 0.4 * nearWall + 0.4 * nearFloor - 0.184483 * numberOfBumpiness;
     }
 
     public void solve(int step) {
-        switch(step) {
+        switch (step) {
             case 0: {
                 Figure bestFigure = new Figure(currentFigure.getType());
                 double bestScore = -1e6;
+                thisField.deleteFigure(currentFigure);
                 Figure usingFigure = new Figure(currentFigure.getType());
                 usingFigure.assign(currentFigure);
-                thisField.deleteFigure(currentFigure);
-                usingFigure.falling();
-                thisField.deleteFigure(usingFigure);
-                for (int i = 0; i < 4; i++) {
-                    Figure rotationState = new Figure(usingFigure.getType());
-                    rotationState.assign(usingFigure);
-                    while (usingFigure.getPosition().ableToMove(LEFT)) {
-                        usingFigure.movePosition(LEFT);
-                        thisField.deleteFigure(usingFigure);
-                    }
-                    while (usingFigure.getPosition().ableToMove(RIGHT)) {
-                        Figure upperState = new Figure(usingFigure.getType());
-                        upperState.assign(usingFigure);
-                        while (usingFigure.getPosition().ableToFall()) {
-                            usingFigure.falling();
-                            thisField.deleteFigure(usingFigure);
-                        }
-                        thisField.addFigure(usingFigure);
-                        double currentScore = calculateTheScore(usingFigure);
-                        if (currentScore - bestScore > 0.0001) {
-                            bestScore = currentScore;
-                            bestFigure.assign(usingFigure);
-                        }
-                        usingFigure.assign(upperState);
-                        usingFigure.movePosition(RIGHT);
-                        thisField.deleteFigure(usingFigure);
-                    }
-                    usingFigure.assign(rotationState);
-                    if (!usingFigure.getPosition().ableToRotate()) {
-                        if (usingFigure.getPosition().ableToFall()) {
-                            usingFigure.falling();
-                            thisField.deleteFigure(usingFigure);
-                        }
-                        if (!usingFigure.getPosition().ableToRotate()) {
-                            break;
-                        }
-                    }
-                    usingFigure.rotatePosition();
+                for (int j = 0; j < 2; j++) {
+                    usingFigure.falling();
                     thisField.deleteFigure(usingFigure);
+                    for (int i = 0; i < 4; i++) {
+                        Figure rotationState = new Figure(usingFigure.getType());
+                        rotationState.assign(usingFigure);
+                        while (usingFigure.getPosition().ableToMove(LEFT)) {
+                            usingFigure.movePosition(LEFT);
+                            thisField.deleteFigure(usingFigure);
+                        }
+                        while (usingFigure.getPosition().ableToMove(RIGHT)) {
+                            Figure upperState = new Figure(usingFigure.getType());
+                            upperState.assign(usingFigure);
+                            while (usingFigure.getPosition().ableToFall()) {
+                                usingFigure.falling();
+                                thisField.deleteFigure(usingFigure);
+                            }
+                            thisField.addFigure(usingFigure);
+                            double currentScore = calculateTheScore(usingFigure);
+                            if (currentScore - bestScore > 0.0000001) {
+                                bestScore = currentScore;
+                                bestFigure.assign(usingFigure);
+                            }
+                            usingFigure.assign(upperState);
+                            usingFigure.movePosition(RIGHT);
+                            thisField.deleteFigure(usingFigure);
+                        }
+                        usingFigure.assign(rotationState);
+                        if (!usingFigure.getPosition().ableToRotate()) {
+                            if (usingFigure.getPosition().ableToFall()) {
+                                usingFigure.falling();
+                                thisField.deleteFigure(usingFigure);
+                            }
+                            if (!usingFigure.getPosition().ableToRotate()) {
+                                break;
+                            }
+                        }
+                        usingFigure.rotatePosition();
+                        thisField.deleteFigure(usingFigure);
+                    }
+                    usingFigure.assign(nextFigure);
                 }
-                thisField.deleteFigure(usingFigure);
+                if (bestFigure.getType() != currentFigure.getType()) {
+                    nextFigure.assign(new Figure(currentFigure.getType()));
+                } else {
+                    nextFigure.assign(new Figure(nextFigure.getType()));
+                }
                 currentFigure.assign(bestFigure);
                 thisField.addFigure(currentFigure);
                 break;
             }
-            case 1:{
+            case 1: {
                 thisField.update();
                 break;
             }
-            default:{
+            default: {
                 recreateFigure();
                 thisField.addFigure(currentFigure);
                 break;
@@ -163,5 +175,19 @@ public class TetrisSolver {
         countNearCells(position.getSecondCell());
         countNearCells(position.getThirdCell());
         countNearCells(position.getForthCell());
+    }
+
+    private void setNumberOfBumpiness() {
+        numberOfBumpiness = 0;
+        int last = 0;
+        for (int i = 0; i < 10; i++) {
+            int j;
+            for(j = 0; j < 16; j++) {
+                if (thisField.field[i][j].getStatus() != EMPTY) break;
+            }
+            if (i == 0) last = j;
+            numberOfBumpiness += abs(last - j);
+            last = j;
+        }
     }
 }

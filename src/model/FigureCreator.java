@@ -2,9 +2,7 @@ package model;
 
 import java.util.Random;
 
-import static controller.Controller.endOfGame;
-import static controller.Controller.fieldOpened;
-
+import static controller.Controller.*;
 import static model.FigureType.*;
 import static view.MainFrame.drawEndingScreen;
 import static view.MainFrame.thisField;
@@ -24,7 +22,7 @@ public class FigureCreator {
         if (!currentFigure.getPosition().ableToFall()) {
             fieldOpened = false;
             endOfGame = true;
-            drawEndingScreen();
+            if (ableToControl) drawEndingScreen();
             return;
         }
         switch (random.nextInt(7)) {
