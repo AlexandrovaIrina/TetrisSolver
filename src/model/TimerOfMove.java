@@ -16,9 +16,9 @@ public class TimerOfMove extends TimerTask {
     private void completeTask() {
         if (fieldOpened) {
             try {
-                Thread.sleep(400);
+                Thread.sleep(100);
                 currentFigure.falling();
-                MainFrame.redrawField();
+                if (fieldOpened) MainFrame.redrawField();
             }
             catch (InterruptedException e) {
                 e.printStackTrace();

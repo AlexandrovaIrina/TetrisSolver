@@ -14,16 +14,11 @@ public class MainFrame extends JFrame {
     final int buttonY = 250;
     private static JPanel panel;
     private final Controller controller = new Controller(this);
-    public static Cell[][] field = new Cell[10][16];
+    public static Field thisField;
 
     MainFrame (String s) {
         super (s);
-        field = new Cell[10][16];
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 16; j++){
-                field [i][j] = new Cell(i, j);
-            }
-        }
+        thisField = new Field();
         panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -146,15 +141,27 @@ public class MainFrame extends JFrame {
         Graphics g = panel.getGraphics();
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 16; j++) {
-                g.drawImage(chooseCellIcon(field[i][j].getStatus()).getImage(),
+                g.drawImage(chooseCellIcon(thisField.field[i][j].getStatus()).getImage(),
                         x + i * cellWidth, y + j * cellWidth, panel);
             }
         }
-        g.drawImage(new ImageIcon("resources/rectangle.png").getImage(), 472, 54, panel);
-        g.drawImage(chooseFigureIcon(nextFigure).getImage(),500, 65, panel);
+        g.drawImage(chooseFigureIcon(nextFigure).getImage(),471, 53, panel);
+        g.setColor(Color.WHITE);
+        g.fillRect(473, 150, 94, 36);
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Helvetica", Font.PLAIN, 20));
+        g.drawString(Integer.toString(thisField.score), 500, 170);
+
     }
 
-    public static void main(String[] args) {
+    public static void drawEndingScreen() {
+        Graphics g = panel.getGraphics();
+        g.drawImage((new ImageIcon("resources/EndingBackground.png").getImage()), 0, 0, panel);
+        g.setColor(new Color(255, 128, 0));
+        g.setFont(new Font("Helvetica", Font.PLAIN, 50));
+        g.drawString(Integer.toString(thisField.score), 290, 415);
+
+    }    public static void main(String[] args) {
         SwingUtilities.invokeLater(
                 () -> new MainFrame("Тетрис")
         );

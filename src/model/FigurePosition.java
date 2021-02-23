@@ -4,9 +4,10 @@ package model;
 import static model.CellStatus.*;
 import static model.CellStatus.EMPTY;
 
+import static model.Figure.rotatedCell;
 import static model.Move.*;
 
-import static view.MainFrame.field;
+import static view.MainFrame.thisField;
 
 public class FigurePosition {
     private Cell firstCell;
@@ -103,9 +104,6 @@ public class FigurePosition {
     public void setThirdCell(Cell cell) { thirdCell = cell; }
     public void setForthCell(Cell cell) { forthCell = cell; }
 
-    public void rotatePosition(){
-
-    }
 
     public void changePosition(int dx, int dy) {
         setFirstCell(new Cell(firstCell.getX() + dx, firstCell.getY() + dy));
@@ -124,28 +122,42 @@ public class FigurePosition {
     public boolean ableToMove(Move move) {
         if (move == LEFT && secondCell.getX() > 0 && thirdCell.getX() > 0 &&
                 firstCell.getX() > 0 && forthCell.getX() > 0 && 
-                field[firstCell.getX() - 1][firstCell.getY()].getStatus() == EMPTY &&
-                field[secondCell.getX() - 1][secondCell.getY()].getStatus() == EMPTY &&
-                field[thirdCell.getX() - 1][thirdCell.getY()].getStatus() == EMPTY &&
-                field[forthCell.getX() - 1][forthCell.getY()].getStatus() == EMPTY) return true;
+                thisField.field[firstCell.getX() - 1][firstCell.getY()].getStatus() == EMPTY &&
+                thisField.field[secondCell.getX() - 1][secondCell.getY()].getStatus() == EMPTY &&
+                thisField.field[thirdCell.getX() - 1][thirdCell.getY()].getStatus() == EMPTY &&
+                thisField.field[forthCell.getX() - 1][forthCell.getY()].getStatus() == EMPTY) return true;
 
         return move == RIGHT && firstCell.getX() < 9 && secondCell.getX() < 9 &&
                 thirdCell.getX() < 9 && forthCell.getX() < 9 &&
-                field[firstCell.getX() + 1][firstCell.getY()].getStatus() == EMPTY &&
-                field[secondCell.getX() + 1][secondCell.getY()].getStatus() == EMPTY &&
-                field[thirdCell.getX() + 1][thirdCell.getY()].getStatus() == EMPTY &&
-                field[forthCell.getX() + 1][forthCell.getY()].getStatus() == EMPTY;
+                thisField.field[firstCell.getX() + 1][firstCell.getY()].getStatus() == EMPTY &&
+                thisField.field[secondCell.getX() + 1][secondCell.getY()].getStatus() == EMPTY &&
+                thisField.field[thirdCell.getX() + 1][thirdCell.getY()].getStatus() == EMPTY &&
+                thisField.field[forthCell.getX() + 1][forthCell.getY()].getStatus() == EMPTY;
     }
 
     public boolean ableToFall() {
         return firstCell.getY() < 15 && secondCell.getY() < 15 &&
                 thirdCell.getY() < 15 && forthCell.getY() < 15 &&
-                field[firstCell.getX()][firstCell.getY() + 1].getStatus() == EMPTY &&
-                field[secondCell.getX()][secondCell.getY() + 1].getStatus() == EMPTY &&
-                field[thirdCell.getX()][thirdCell.getY() + 1].getStatus() == EMPTY &&
-                field[forthCell.getX()][forthCell.getY() + 1].getStatus() == EMPTY;
+                thisField.field[firstCell.getX()][firstCell.getY() + 1].getStatus() == EMPTY &&
+                thisField.field[secondCell.getX()][secondCell.getY() + 1].getStatus() == EMPTY &&
+                thisField.field[thirdCell.getX()][thirdCell.getY() + 1].getStatus() == EMPTY &&
+                thisField.field[forthCell.getX()][forthCell.getY() + 1].getStatus() == EMPTY;
     }
 
-
+    public boolean ableToRotate() {
+        final Cell rotatedFirst = rotatedCell(secondCell,firstCell);
+        final Cell rotatedThird = rotatedCell(secondCell,thirdCell);
+        final Cell rotatedForth = rotatedCell(secondCell,forthCell);
+        if (rotatedFirst.getX() < 0 || rotatedFirst.getX() > 9 || 
+                rotatedFirst.getY() < 0 || rotatedFirst.getY() > 15) return false;
+        if (thisField.field[rotatedFirst.getX()][rotatedFirst.getY()].getStatus() != EMPTY) return false;
+        if (rotatedThird.getX() < 0 || rotatedThird.getX() > 9 ||
+                rotatedThird.getY() < 0 || rotatedThird.getY() > 15) return false;
+        if (thisField.field[rotatedThird.getX()][rotatedThird.getY()].getStatus() != EMPTY) return false;
+        if (rotatedForth.getX() < 0 || rotatedForth.getX() > 9 ||
+                rotatedForth.getY() < 0 || rotatedForth.getY() > 15) return false;
+        if (thisField.field[rotatedForth.getX()][rotatedForth.getY()].getStatus() != EMPTY) return false;
+        return true;
+    }
 
 }

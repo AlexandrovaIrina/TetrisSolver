@@ -48,7 +48,7 @@ public class Controller {
                 if (x >= 488 && x <= 488 + cellWidth &&
                         y >= 641 && y <= 641 + cellWidth) {
                     if (ableToMake) {
-                        System.out.println("rotation");
+                        currentFigure.rotatePosition();
                     }
                 }
                 if (y >= 679 && y <= 679 + cellWidth) {
