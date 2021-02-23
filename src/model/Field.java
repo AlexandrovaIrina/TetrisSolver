@@ -47,14 +47,10 @@ public class Field {
     }
 
     public static void addFigure(Figure figure) {
-        field[figure.getPosition().getFirstCell().getX()]
-                [figure.getPosition().getFirstCell().getY()].setStatus(figure.getPosition().getFirstCell().getStatus());
-        field[figure.getPosition().getSecondCell().getX()]
-                [figure.getPosition().getSecondCell().getY()].setStatus(figure.getPosition().getSecondCell().getStatus());
-        field[figure.getPosition().getThirdCell().getX()]
-                [figure.getPosition().getThirdCell().getY()].setStatus(figure.getPosition().getThirdCell().getStatus());
-        field[figure.getPosition().getForthCell().getX()]
-                [figure.getPosition().getForthCell().getY()].setStatus(figure.getPosition().getForthCell().getStatus());
+        field[figure.getPosition().getFirstCell().getX()][figure.getPosition().getFirstCell().getY()].setStatus(figure.getColor());
+        field[figure.getPosition().getSecondCell().getX()][figure.getPosition().getSecondCell().getY()].setStatus(figure.getColor());
+        field[figure.getPosition().getThirdCell().getX()][figure.getPosition().getThirdCell().getY()].setStatus(figure.getColor());
+        field[figure.getPosition().getForthCell().getX()][figure.getPosition().getForthCell().getY()].setStatus(figure.getColor());
     }
 
     public static void update() {

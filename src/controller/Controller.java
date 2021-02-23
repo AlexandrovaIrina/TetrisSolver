@@ -82,7 +82,6 @@ public class Controller {
                     }
                 }
             }
-            redrawField();
             ableToMake = false;
         }
 

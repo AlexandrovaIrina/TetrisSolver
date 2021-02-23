@@ -168,6 +168,6 @@ public class MainFrame extends JFrame {
 
         TimerTask timerTask = new TimerOfMove();
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(timerTask, 0, 400);
+        timer.scheduleAtFixedRate(timerTask, 0, 200);
     }
 }

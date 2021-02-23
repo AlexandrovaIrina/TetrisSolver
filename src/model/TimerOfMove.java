@@ -24,7 +24,7 @@ public class TimerOfMove extends TimerTask {
     private void completeTask() {
         if (ableToControl) {
             currentFigure.falling();
-            if (fieldOpened) MainFrame.redrawField();
+            if (fieldOpened) redrawField();
         } else if (!endOfGame) {
             Controller.solver.solve(step);
             redrawField();

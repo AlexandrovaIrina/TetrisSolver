@@ -3,6 +3,7 @@ package solver;
 import model.Cell;
 import model.Figure;
 import model.FigurePosition;
+import view.MainFrame;
 
 import static model.CellStatus.EMPTY;
 import static model.FigureCreator.recreateFigure;
@@ -34,8 +35,8 @@ public class TetrisSolver {
         setCurrentNumberOfHoles();
         setCurrentSumOfHeight();
         setCurrentNumberOfCells(figure.getPosition());
-        return -4.7 * sumOfHeight + 8.0 * numberOfClears - 4.61 * numberOfHoles - 3.5 * numberOfBlockades
-                + 5.0 * nearBlock + 3.5 * nearWall + 7.0 * nearFloor;
+        return -4.7 * sumOfHeight + 5.0 * numberOfClears - 4.61 * numberOfHoles - 0.0 * numberOfBlockades
+                + 0.0 * nearBlock + 0.0 * nearWall + 0.0 * nearFloor;
     }
 
     public void solve(int step) {
@@ -44,6 +45,7 @@ public class TetrisSolver {
                 Figure bestFigure = new Figure(currentFigure.getType());
                 double bestScore = -1e6;
                 Figure usingFigure = new Figure(currentFigure.getType());
+                usingFigure.assign(currentFigure);
                 thisField.deleteFigure(currentFigure);
                 usingFigure.falling();
                 thisField.deleteFigure(usingFigure);
