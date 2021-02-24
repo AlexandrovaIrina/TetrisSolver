@@ -15,6 +15,11 @@ public class Cell {
         this.y = y;
         this.status = status;
     }
+    public Cell(Cell other) {
+        this.x = other.x;
+        this.y = other.y;
+        this.status = other.status;
+    }
 
     public int getX() {
         return x;

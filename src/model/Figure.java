@@ -14,7 +14,7 @@ public class Figure {
     private FigurePosition position;
     public Figure(FigureType type) {
         Figure temp = new Figure(type, new FigurePosition(type));
-        this.position = temp.position;
+        this.position = new FigurePosition(temp.getPosition());
         this.type = temp.type;
         this.color = temp.color;
     }
@@ -111,17 +111,15 @@ public class Figure {
         }
         thisField.addFigure(this);
 
-        if (!able) {
+        if (!able && ableToControl) {
             thisField.update();
-            if (ableToControl) {
-                redrawField();
-                recreateFigure();
-            }
+            redrawField();
+            recreateFigure();
         }
     }
 
     public void assign(Figure other) {
-        this.position = other.position;
+        this.position = new FigurePosition(other.position);
         this.type = other.type;
         this.color = other.color;
     }

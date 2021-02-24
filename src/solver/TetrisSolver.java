@@ -1,6 +1,7 @@
 package solver;
 
 import model.Cell;
+import model.Field;
 import model.Figure;
 import model.FigurePosition;
 
@@ -47,46 +48,50 @@ public class TetrisSolver {
             case 0: {
                 Figure bestFigure = new Figure(currentFigure.getType());
                 double bestScore = -1e6;
-                thisField.deleteFigure(currentFigure);
+                Field.deleteFigure(currentFigure);
                 Figure usingFigure = new Figure(currentFigure.getType());
                 usingFigure.assign(currentFigure);
                 for (int j = 0; j < 2; j++) {
                     usingFigure.falling();
-                    thisField.deleteFigure(usingFigure);
+                    Field.deleteFigure(usingFigure);
                     for (int i = 0; i < 4; i++) {
                         Figure rotationState = new Figure(usingFigure.getType());
                         rotationState.assign(usingFigure);
                         while (usingFigure.getPosition().ableToMove(LEFT)) {
                             usingFigure.movePosition(LEFT);
-                            thisField.deleteFigure(usingFigure);
+                            Field.deleteFigure(usingFigure);
                         }
-                        while (usingFigure.getPosition().ableToMove(RIGHT)) {
+                        boolean temp = true;
+                        while (true) {
                             Figure upperState = new Figure(usingFigure.getType());
                             upperState.assign(usingFigure);
                             while (usingFigure.getPosition().ableToFall()) {
                                 usingFigure.falling();
-                                thisField.deleteFigure(usingFigure);
+                                Field.deleteFigure(usingFigure);
                             }
-                            thisField.addFigure(usingFigure);
+                            Field.addFigure(usingFigure);
                             double currentScore = calculateTheScore(usingFigure);
                             if (currentScore - bestScore > 0.0001) {
                                 bestScore = currentScore;
                                 bestFigure.assign(usingFigure);
                             }
+                            Field.deleteFigure(usingFigure);
                             usingFigure.assign(upperState);
                             usingFigure.movePosition(RIGHT);
-                            thisField.deleteFigure(usingFigure);
+                            Field.deleteFigure(usingFigure);
+                            if (!(temp || usingFigure.getPosition().ableToMove(RIGHT))) break;
+                            temp = usingFigure.getPosition().ableToMove(RIGHT);
                         }
                         usingFigure.assign(rotationState);
                         if (!usingFigure.getPosition().ableToRotate()) {
                             if (usingFigure.getPosition().ableToFall()) {
                                 usingFigure.falling();
-                                thisField.deleteFigure(usingFigure);
+                                Field.deleteFigure(usingFigure);
                             }
                             if (!usingFigure.getPosition().ableToRotate()) {
                                 if (usingFigure.getPosition().ableToFall()) {
                                     usingFigure.falling();
-                                    thisField.deleteFigure(usingFigure);
+                                    Field.deleteFigure(usingFigure);
                                 }
                                 if (!usingFigure.getPosition().ableToRotate()) {
                                     break;
@@ -94,7 +99,7 @@ public class TetrisSolver {
                             }
                         }
                         usingFigure.rotatePosition();
-                        thisField.deleteFigure(usingFigure);
+                        Field.deleteFigure(usingFigure);
                     }
                     usingFigure.assign(nextFigure);
                 }
@@ -104,16 +109,16 @@ public class TetrisSolver {
                     nextFigure.assign(new Figure(nextFigure.getType()));
                 }
                 currentFigure.assign(bestFigure);
-                thisField.addFigure(currentFigure);
+                Field.addFigure(currentFigure);
                 break;
             }
             case 1: {
-                thisField.update();
+                Field.update();
                 break;
             }
             default: {
                 recreateFigure();
-                thisField.addFigure(currentFigure);
+                Field.addFigure(currentFigure);
                 break;
             }
         }
@@ -186,7 +191,7 @@ public class TetrisSolver {
         int last = 0;
         for (int i = 0; i < 10; i++) {
             int j;
-            for(j = 0; j < 16; j++) {
+            for (j = 0; j < 16; j++) {
                 if (thisField.field[i][j].getStatus() != EMPTY) break;
             }
             if (i == 0) last = j;

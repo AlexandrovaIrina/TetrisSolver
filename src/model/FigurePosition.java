@@ -114,10 +114,10 @@ public class FigurePosition {
     }
 
     public FigurePosition (FigurePosition position) {
-        this.firstCell = position.getFirstCell();
-        this.secondCell = position.getSecondCell();
-        this.thirdCell = position.getThirdCell();
-        this.forthCell = position.getForthCell();
+        this.firstCell = new Cell(position.getFirstCell());
+        this.secondCell = new Cell(position.getSecondCell());
+        this.thirdCell = new Cell(position.getThirdCell());
+        this.forthCell = new Cell(position.getForthCell());
     }
     public boolean ableToMove(Move move) {
         if (move == LEFT) {

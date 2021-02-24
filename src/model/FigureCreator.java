@@ -12,49 +12,46 @@ public class FigureCreator {
     public static Figure nextFigure;
 
     public FigureCreator() {
-        currentFigure = new Figure(LINE);
-        nextFigure = new Figure(SQUARE);
+        currentFigure = getRandomFigure();
+        nextFigure = getRandomFigure();
+    }
+
+    private static Figure getRandomFigure(){
+        final Random random = new Random();
+        switch (random.nextInt(7)) {
+            case 0: {
+                return new Figure(J);
+            }
+            case 1: {
+                return new Figure(T);
+            }
+            case 2: {
+                return new Figure(S);
+            }
+            case 3: {
+                return new Figure(Z);
+            }
+            case 4: {
+                return new Figure(LINE);
+            }
+            case 5: {
+                return new Figure(SQUARE);
+            }
+            default: {
+                return new Figure(L);
+            }
+        }
     }
 
     public static void recreateFigure() {
         currentFigure.assign(nextFigure);
-        final Random random = new Random();
         if (!currentFigure.getPosition().ableToFall()) {
             fieldOpened = false;
             endOfGame = true;
             if (ableToControl) drawEndingScreen();
             return;
         }
-        switch (random.nextInt(7)) {
-            case 0: {
-                nextFigure.assign(new Figure(J));
-                break;
-            }
-            case 1: {
-                nextFigure.assign(new Figure(T));
-                break;
-            }
-            case 2: {
-                nextFigure.assign(new Figure(S));
-                break;
-            }
-            case 3: {
-                nextFigure.assign(new Figure(Z));
-                break;
-            }
-            case 4: {
-                nextFigure.assign(new Figure(LINE));
-                break;
-            }
-            case 5: {
-                nextFigure.assign(new Figure(SQUARE));
-                break;
-            }
-            case 6: {
-                nextFigure.assign(new Figure(L));
-                break;
-            }
-        }
+        nextFigure.assign(getRandomFigure());
     }
     public static void swapFigures(Figure currentFigure, Figure nextFigure) {
         thisField.deleteFigure(currentFigure);
