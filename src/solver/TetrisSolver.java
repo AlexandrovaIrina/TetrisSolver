@@ -3,12 +3,10 @@ package solver;
 import model.Cell;
 import model.Figure;
 import model.FigurePosition;
-import view.MainFrame;
 
 import static java.lang.Math.abs;
 import static model.CellStatus.EMPTY;
 import static model.FigureCreator.recreateFigure;
-import static model.FigureCreator.swapFigures;
 import static model.Move.*;
 import static view.MainFrame.*;
 
@@ -40,8 +38,8 @@ public class TetrisSolver {
         setCurrentSumOfHeight();
         setCurrentNumberOfCells(figure.getPosition());
         setNumberOfBumpiness();
-        return -0.510066 * sumOfHeight + 0.760666 * numberOfClears - 0.35663 * numberOfHoles - 0.0 * numberOfBlockades
-                + 0.4 * nearBlock + 0.4 * nearWall + 0.4 * nearFloor - 0.184483 * numberOfBumpiness;
+        return -0.49 * sumOfHeight + 0.78 * numberOfClears - 0.47 * numberOfHoles - 0.36 * numberOfBlockades
+                + 0.43 * nearBlock + 0.4 * nearWall + 0.42 * nearFloor - 0.25 * numberOfBumpiness;
     }
 
     public void solve(int step) {
@@ -71,7 +69,7 @@ public class TetrisSolver {
                             }
                             thisField.addFigure(usingFigure);
                             double currentScore = calculateTheScore(usingFigure);
-                            if (currentScore - bestScore > 0.0000001) {
+                            if (currentScore - bestScore > 0.0001) {
                                 bestScore = currentScore;
                                 bestFigure.assign(usingFigure);
                             }
@@ -86,7 +84,13 @@ public class TetrisSolver {
                                 thisField.deleteFigure(usingFigure);
                             }
                             if (!usingFigure.getPosition().ableToRotate()) {
-                                break;
+                                if (usingFigure.getPosition().ableToFall()) {
+                                    usingFigure.falling();
+                                    thisField.deleteFigure(usingFigure);
+                                }
+                                if (!usingFigure.getPosition().ableToRotate()) {
+                                    break;
+                                }
                             }
                         }
                         usingFigure.rotatePosition();

@@ -17,6 +17,16 @@ public class Field {
         }
     }
 
+    public Field(Cell[][] cells) {
+        score = 0;
+        field = new Cell[10][16];
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 16; j++) {
+                field[i][j] = new Cell(i, j, cells[i][j].getStatus());
+            }
+        }
+    }
+
     public static int deleteLines(boolean toDelete) {
         int answer = 0;
         for (int j = 0; j < 16; j++) {
