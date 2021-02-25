@@ -16,8 +16,8 @@ public class MainFrame extends JFrame {
     private final Controller controller = new Controller(this);
     public static Field thisField;
 
-    MainFrame (String s) {
-        super (s);
+    MainFrame(String s) {
+        super(s);
         thisField = new Field();
         panel = new JPanel() {
             @Override
@@ -33,9 +33,9 @@ public class MainFrame extends JFrame {
             }
         };
         add(panel);
-        setSize (600, 800);
+        setSize(600, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible (true);
+        setVisible(true);
     }
 
     private static final int x = 54;
@@ -57,8 +57,9 @@ public class MainFrame extends JFrame {
         g.drawImage((new ImageIcon("resources/ChangeButton.png").getImage()), 488, 679, panel);
 
         add(panel);
-        setSize (600, 800);
+        setSize(600, 800);
     }
+
     public static FigureCreator creator = new FigureCreator();
     public static Figure currentFigure = creator.currentFigure;
     public static Figure nextFigure = creator.nextFigure;
@@ -66,27 +67,27 @@ public class MainFrame extends JFrame {
     private static ImageIcon chooseCellIcon(CellStatus status) {
         ImageIcon cellIcon;
         switch (status) {
-            case YELLOW:{
+            case YELLOW: {
                 cellIcon = new ImageIcon("resources/YellowCell.png");
                 break;
             }
-            case GREEN:{
+            case GREEN: {
                 cellIcon = new ImageIcon("resources/GreenCell.png");
                 break;
             }
-            case BLUE:{
+            case BLUE: {
                 cellIcon = new ImageIcon("resources/BlueCell.png");
                 break;
             }
-            case ORANGE:{
+            case ORANGE: {
                 cellIcon = new ImageIcon("resources/OrangeCell.png");
                 break;
             }
-            case RED:{
+            case RED: {
                 cellIcon = new ImageIcon("resources/RedCell.png");
                 break;
             }
-            case CYAN:{
+            case CYAN: {
                 cellIcon = new ImageIcon("resources/CyanCell.png");
                 break;
             }
@@ -105,27 +106,27 @@ public class MainFrame extends JFrame {
     private static ImageIcon chooseFigureIcon(Figure figure) {
         ImageIcon figureIcon;
         switch (figure.getColor()) {
-            case YELLOW:{
+            case YELLOW: {
                 figureIcon = new ImageIcon("resources/Jfigure.png");
                 break;
             }
-            case GREEN:{
+            case GREEN: {
                 figureIcon = new ImageIcon("resources/Lfigure.png");
                 break;
             }
-            case BLUE:{
+            case BLUE: {
                 figureIcon = new ImageIcon("resources/Sfigure.png");
                 break;
             }
-            case ORANGE:{
+            case ORANGE: {
                 figureIcon = new ImageIcon("resources/Tfigure.png");
                 break;
             }
-            case RED:{
+            case RED: {
                 figureIcon = new ImageIcon("resources/Zfigure.png");
                 break;
             }
-            case CYAN:{
+            case CYAN: {
                 figureIcon = new ImageIcon("resources/LINEfigure.png");
                 break;
             }
@@ -136,7 +137,7 @@ public class MainFrame extends JFrame {
         }
         return figureIcon;
     }
-    
+
     public static void redrawField() {
         Graphics g = panel.getGraphics();
         for (int i = 0; i < 10; i++) {
@@ -145,7 +146,7 @@ public class MainFrame extends JFrame {
                         x + i * cellWidth, y + j * cellWidth, panel);
             }
         }
-        g.drawImage(chooseFigureIcon(nextFigure).getImage(),471, 53, panel);
+        g.drawImage(chooseFigureIcon(nextFigure).getImage(), 471, 53, panel);
         g.setColor(Color.WHITE);
         g.fillRect(473, 150, 94, 36);
         g.setColor(Color.BLACK);
@@ -161,13 +162,15 @@ public class MainFrame extends JFrame {
         g.setFont(new Font("Helvetica", Font.PLAIN, 50));
         g.drawString(Integer.toString(thisField.score), 290, 415);
 
-    }    public static void main(String[] args) {
+    }
+
+    public static void main(String[] args) {
         SwingUtilities.invokeLater(
                 () -> new MainFrame("Тетрис")
         );
 
         TimerTask timerTask = new TimerOfMove();
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(timerTask, 0, 3);
+        timer.scheduleAtFixedRate(timerTask, 0, 2);
     }
 }
